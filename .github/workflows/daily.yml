@@ -1,0 +1,51 @@
+name: Daily privacy change monitoring
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 0 * * *' # 09:15 KST
+permissions:
+  contents: write
+concurrency:
+  group: privacy-monitor
+  cancel-in-progress: false
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: pytest -q
+      - name: Collect and analyze
+        id: collect
+        continue-on-error: true
+        env:
+          LAW_API_OC: ${{ secrets.LAW_API_OC }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-4.1-mini' }}
+        run: |
+          mkdir -p data reports
+          python -m privacy_watch --llm
+      - name: Save snapshot and reports
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/privacy_watch.sqlite3 reports/latest.md reports/latest.json || true
+          git diff --staged --quiet || git commit -m 'chore: refresh daily privacy monitoring data'
+          git push
+      - name: Upload report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: privacy-watch-report
+          path: reports/
+          if-no-files-found: ignore
+          retention-days: 30
+      - name: Fail workflow if any source failed
+        if: steps.collect.outcome == 'failure'
+        run: exit 1
