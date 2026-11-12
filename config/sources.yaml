@@ -1,0 +1,48 @@
+# Edit URLs and titles here. The PIPC index discovers new guide posts.
+web:
+  - id: naver-privacy
+    title: 네이버 개인정보 처리방침
+    url: https://policy.naver.com/policy/privacy.html
+    category: policy
+    selector: main
+  - id: naver-privacy-center
+    title: 네이버 프라이버시 센터 - 원칙
+    url: https://privacy.naver.com/policy/principle/privacy-policy
+    category: policy
+  - id: naver-per-guide
+    title: 네이버 PER 안내
+    url: https://privacy.naver.com/persystem/persystem/guide
+    category: policy
+  - id: naver-mybox-privacy
+    title: 네이버 MYBOX 개인정보 관련 정책 소개
+    url: https://help.naver.com/service/30007/contents/17173?osType=COMMONOS
+    category: policy
+pipc:
+  - id: pipc-guides
+    title: 개인정보보호위원회 안내서
+    url: https://pipc.go.kr/np/cop/bbs/selectBoardList.do?bbsId=BS217&mCode=G010030000
+    category: guide
+    max_articles: 30
+  - id: pipc-interpretations
+    title: 개인정보보호위원회 법령 및 해석자료 검색 시작점
+    url: https://www.pipc.go.kr/np/default/page.do?mCode=D020010000
+    category: interpretation
+    max_articles: 10
+laws:
+  - id: pipa
+    title: 개인정보 보호법
+    query: 개인정보 보호법
+    category: law
+  - id: pipa-decree
+    title: 개인정보 보호법 시행령
+    query: 개인정보 보호법 시행령
+    category: decree
+administrative_rules:
+  - id: security-standard
+    title: 개인정보의 안전성 확보조치 기준
+    query: 개인정보의 안전성 확보조치 기준
+    category: notice
+  - id: privacy-impact-standard
+    title: 개인정보 영향평가에 관한 고시
+    query: 개인정보 영향평가에 관한 고시
+    category: notice
