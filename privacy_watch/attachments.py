@@ -80,6 +80,9 @@ def pdf_extract(data):
         raise ValueError('encrypted or oversized PDF')
     text = '\n'.join(page.extract_text() or '' for page in reader.pages)
     if len(text.strip()) >= 40: return text
+    # Do not silently discard pages: OCR only documents within the reviewed cap.
+    if len(reader.pages) > 10:
+        raise ValueError('scanned PDF exceeds 10-page OCR cap; manual review required')
     with TemporaryDirectory() as tmp:
         source = Path(tmp) / 'source.pdf'
         source.write_bytes(data)
