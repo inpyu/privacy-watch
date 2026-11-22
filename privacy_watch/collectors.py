@@ -12,6 +12,7 @@ from urllib3.util.retry import Retry
 from bs4 import BeautifulSoup
 from pypdf import PdfReader
 from .core import Document, normalize
+from .attachments import extract_attachment, SUPPORTED
 
 UA = 'PrivacyWatchResearch/0.1 (+public-document-change-monitor; contact configured by operator)'
 
@@ -185,43 +186,78 @@ def pdf_text(raw):
     return '\n'.join((p.extract_text() or '') for p in reader.pages)
 
 
+def discover_pipc_attachments(data, article_url):
+    """Identify official attachment URLs already present in the HTML; never invent JS endpoints."""
+    soup = BeautifulSoup(data, 'lxml')
+    discovered = []
+    unresolvable = []
+    seen = set()
+    for a in soup.find_all('a'):
+        label = normalize(a.get_text(' ', strip=True))
+        meta = ' '.join((label, a.get('title', ''), a.get('download', '') or '',
+                         a.get('href', ''), a.get('onclick', '')))
+        # Attachment candidate based on extension or official download-link markup.
+        ext = re.search(r'(?i)\.(?:pdf|hwp|hwpx|docx?|xlsx?|pptx?|odt|ods|odp|rtf|txt|csv)\b', meta)
+        if not ext and not re.search(r'(?i)첨부파일|파일다운로드|downloadfile|filedown', meta):
+            continue
+        href = (a.get('href') or '').strip()
+        onclick = (a.get('onclick') or '').strip()
+        if not href or href.lower().startswith(('javascript:', '#')):
+            # Only accept a literal, explicit URL passed within onclick; never execute JS.
+            found = re.search(r'(?i)(https?://[^\s\x22\x27)]+|/[^\s\x22\x27)]+\.(?:do|pdf|hwp|hwpx|docx?|xlsx?|pptx?)(?:\?[^\s\x22\x27)]*)?)', onclick)
+            href = found.group(1) if found else ''
+        if not href:
+            unresolvable.append(label[:120] or 'unresolved attachment')
+            continue
+        target = urljoin(article_url, href)
+        parsed = urlparse(target)
+        if parsed.scheme != 'https' or parsed.hostname not in ('pipc.go.kr', 'www.pipc.go.kr'):
+            unresolvable.append(label[:120] or 'external attachment')
+            continue
+        key = target
+        if key not in seen:
+            seen.add(key)
+            name = label or a.get('title') or parsed.path.rsplit('/', 1)[-1]
+            discovered.append((target, name))
+    return discovered, unresolvable
+
+
 def fetch_pipc(source, fetcher):
+    """Download and parse official article attachments, recording missing files as failures."""
     raw, listing_url = fetcher.get(source['url'])
     docs = [Document(source['id'] + ':index', source['title'] + ' 목록', listing_url,
                      source['category'], extract_html(raw), {'retrieval': 'pipc_index'})]
     ids = article_links(raw, listing_url)
-    for article_id, (url, title) in ids[:source.get('max_articles', 20)]:
+    # Pages with no article ids must not be treated as successful whole-site coverage.
+    if not ids and source.get('strict_articles', False):
+        raise ValueError('PIPC article discovery yielded no articles')
+    for article_id, (url, title) in ids[:source.get('max_articles', 30)]:
         try:
             data, url = fetcher.get(url)
             content = extract_html(data)
             docs.append(Document(f'{source["id"]}:article:{article_id}', title or f'게시글 {article_id}',
                                  url, source['category'], content, {'retrieval': 'pipc_article'}))
-            # Fetch only explicitly linked PDF attachments on an official PIPC domain.
-            soup = BeautifulSoup(data, 'lxml')
-            attachments = []
-            for a in soup.find_all('a', href=True):
-                label = a.get_text(' ', strip=True)
-                href = urljoin(url, a['href'])
-                if '.pdf' not in (label + href).lower():
-                    continue
-                if urlparse(href).hostname not in ('pipc.go.kr', 'www.pipc.go.kr'):
-                    continue
-                attachments.append((href, label))
-            for i, (href, label) in enumerate(attachments[:5]):
+            attachments, unresolved = discover_pipc_attachments(data, url)
+            if unresolved:
+                raise ValueError('unresolved official attachment links: ' + '; '.join(unresolved[:4]))
+            if len(attachments) > source.get('max_attachments', 12):
+                raise ValueError('article attachment count exceeds configured limit')
+            for target, filename in attachments:
                 try:
-                    file_bytes, file_url = fetcher.get(href, max_bytes=20_000_000)
-                    if not file_bytes.startswith(b'%PDF'):
-                        continue
-                    extracted = pdf_text(file_bytes)
-                    if len(normalize(extracted)) < 40:
-                        raise ValueError('scanned/image PDF: text extraction unavailable')
-                    docs.append(Document(f'{source["id"]}:article:{article_id}:pdf:{i}',
-                         title + ' / ' + label, file_url, source['category'], extracted,
-                         {'retrieval': 'pdf', 'pdf_sha256': hashlib.sha256(file_bytes).hexdigest()}))
-                except (requests.RequestException, ValueError, Exception) as exc:
-                    # Individual attachments should be explicitly surfaced by the runner.
-                    raise RuntimeError(f'PDF attachment {href}: {exc}') from exc
+                    blob, final_url = fetcher.get(target, max_bytes=20_000_000)
+                    if urlparse(final_url).hostname not in ('pipc.go.kr', 'www.pipc.go.kr'):
+                        raise ValueError('redirected attachment outside official PIPC domain')
+                    extracted, extension = extract_attachment(blob, filename)
+                    fingerprint = hashlib.sha256(target.encode('utf-8')).hexdigest()[:20]
+                    docs.append(Document(
+                        f'{source["id"]}:article:{article_id}:attachment:{fingerprint}',
+                        (title or f'게시글 {article_id}') + ' / ' + filename,
+                        public_source_url(final_url), source['category'], extracted,
+                        {'retrieval': 'attachment', 'format': extension,
+                         'file_sha256': hashlib.sha256(blob).hexdigest()}))
+                except Exception as exc:
+                    raise RuntimeError('attachment extraction failed (host=pipc.go.kr): ' +
+                                       type(exc).__name__ + ': ' + str(exc)[:180]) from None
         except Exception as exc:
-            # Never turn a partial article into a successfully checked article.
-            raise RuntimeError(f'PIPC article {article_id}: {exc}') from exc
+            raise RuntimeError(f'PIPC article {article_id}: {exc}') from None
     return docs
