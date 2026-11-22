@@ -4,7 +4,7 @@ import json
 import os
 from pathlib import Path
 import yaml
-from .core import Store
+from .core import Store, sanitize_error
 from .collectors import Fetcher, fetch_web, fetch_pipc, fetch_law
 from .analysis import analyze
 from .report import create_reports
@@ -39,7 +39,7 @@ def run(config, db_path, report_dir, llm=False, delay=1.0):
                                 store.set_analysis(event['id'], event['analysis'])
                             events.append(event)
                 except Exception as exc:
-                    err = {'source': source['id'], 'error': f'{type(exc).__name__}: {exc}'}
+                    err = {'source': source['id'], 'error': sanitize_error(f'{type(exc).__name__}: {exc}')}
                     failures.append(err)
                     store.failure(source['id'], err['error'])
                     print('ERROR', json.dumps(err, ensure_ascii=False), flush=True)
