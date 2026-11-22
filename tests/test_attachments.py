@@ -1,5 +1,5 @@
 from io import BytesIO
-from zipfile import ZipFile
+from zipfile import ZipFile, ZIP_DEFLATED
 import pytest
 from privacy_watch.attachments import detect_format, extract_attachment
 from privacy_watch.collectors import discover_pipc_attachments
@@ -7,7 +7,7 @@ from privacy_watch.collectors import discover_pipc_attachments
 
 def make_zip(files):
     buf = BytesIO()
-    with ZipFile(buf, 'w') as z:
+    with ZipFile(buf, 'w', compression=ZIP_DEFLATED) as z:
         for name, content in files.items():
             z.writestr(name, content)
     return buf.getvalue()
