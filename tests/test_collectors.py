@@ -17,3 +17,26 @@ def test_law_search_xml():
 def test_article_discovery():
     html = b'<a href="/np/cop/bbs/selectBoardArticle.do?bbsId=BS217&amp;nttId=12345">Guide</a>'
     assert article_links(html, 'https://pipc.go.kr/np/cop/bbs/selectBoardList.do?bbsId=BS217')[0][0] == '12345'
+
+
+def test_administrative_rule_uses_serial_number_not_stable_id():
+    from privacy_watch.collectors import fetch_law
+    class FakeFetcher:
+        def __init__(self):
+            self.calls = []
+        def get(self, url, params=None):
+            self.calls.append((url, params))
+            if 'lawSearch.do' in url:
+                return ('<행정규칙검색><행정규칙><행정규칙명>테스트 고시</행정규칙명>'
+                        '<행정규칙ID>987</행정규칙ID><행정규칙일련번호>123456</행정규칙일련번호>'
+                        '</행정규칙></행정규칙검색>').encode(), url
+            return ('<행정규칙><조문내용>' + '테스트 고시 본문입니다. ' * 15 +
+                    '</조문내용></행정규칙>').encode(), (
+                     url + '?OC=secret-should-never-be-saved&target=admrul&ID=123456')
+    fake = FakeFetcher()
+    docs = fetch_law({'id': 'sample', 'title': '테스트 고시',
+                      'query': '테스트 고시', 'category': 'notice'},
+                     fake, 'secret-should-never-be-saved', rule=True)
+    assert fake.calls[1][1]['ID'] == '123456'
+    assert 'LID' not in fake.calls[1][1]
+    assert 'OC=' not in docs[0].url
