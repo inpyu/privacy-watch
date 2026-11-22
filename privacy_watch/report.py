@@ -3,16 +3,19 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-def create_reports(events, failures, outdir, candidates=None):
+def create_reports(events, failures, outdir, candidates=None, standing_audits=None):
     path = Path(outdir)
     path.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now(timezone.utc).isoformat()
     candidates = candidates or []
+    standing_audits = standing_audits or []
     report = {'generated_at_utc': timestamp, 'scope': 'public documents only',
               'baseline_count': sum(e['kind'] == 'baseline' for e in events),
               'change_count': sum(e['kind'] == 'changed' for e in events),
               'changes': [{k: v for k, v in e.items() if k != 'text'} for e in events],
-              'failures': failures, 'risk_candidates': candidates, 'risk_candidate_count': len(candidates), 'disclaimer': '자동 변경 탐지; 법률 위반 판정 아님'}
+              'failures': failures, 'risk_candidates': candidates, 'risk_candidate_count': len(candidates),
+              'standing_audits': standing_audits,
+              'standing_audit_count': len(standing_audits), 'disclaimer': '자동 변경 탐지; 법률 위반 판정 아님'}
     (path / 'latest.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
     lines = ['# Privacy Watch — 일일 점검', '', f'- 생성(UTC): {timestamp}',
              f'- 최초 수집: {report["baseline_count"]}건', f'- 변경 감지: {report["change_count"]}건',
@@ -43,6 +46,17 @@ def create_reports(events, failures, outdir, candidates=None):
                       '- 검증 체크리스트: ' + '; '.join(item["verification_checklist"]),
                       '- 법률 검토: ' + '; '.join(item["legal_review"]),
                       '- 판정: unverified_hypothesis', '']
+    if standing_audits:
+        lines += ['## 현행 법규와 현행 정책의 지속 점검 후보', '',
+                  '> 동일 주제의 문구가 확인된 검토 후보이며 불일치 또는 불법이라는 결론이 아닙니다.', '']
+        for item in standing_audits:
+            lines += [f'### {item["topic"]} ({item["audit_id"]})',
+                      f'- 공식 규정: {item["law"]["title"]} / {item["law"]["url"]}',
+                      f'- 네이버 정책: {item["policy"]["title"]} / {item["policy"]["url"]}',
+                      f'- 검토 질문: {item["review_question"]}',
+                      f'- 법령 문맥: {item["law"]["evidence_excerpt"][:300]}',
+                      f'- 정책 문맥: {item["policy"]["evidence_excerpt"][:300]}',
+                      '- 상태: unverified_document_overlap (법률 위반 판정 아님)', '']
     if failures:
         lines += ['## 수집 실패 (확인 필요)', '']
         for f in failures:
