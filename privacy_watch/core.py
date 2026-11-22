@@ -8,6 +8,7 @@ import json
 import re
 import sqlite3
 from pathlib import Path
+from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode
 
 
 def now_iso():
@@ -72,14 +73,28 @@ def semantic_lines(text: str) -> str:
     return '\n'.join(x.strip() for x in text.splitlines() if x.strip())
 
 
+def safe_public_url(url: str) -> str:
+    parts = urlsplit(url)
+    query = urlencode([(k, v) for k, v in parse_qsl(parts.query, keep_blank_values=True)
+                       if k.lower() not in ('oc', 'api_key', 'apikey', 'token', 'key')])
+    return urlunsplit((parts.scheme, parts.netloc, parts.path, query, ''))
+
+
 class Store:
     def __init__(self, path):
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)
         self.db = sqlite3.connect(path)
         self.db.executescript(SCHEMA)
+        # Migrate legacy URLs containing credentials.
+        with self.db:
+            for key, url in self.db.execute('SELECT key, url FROM documents').fetchall():
+                clean = safe_public_url(url)
+                if clean != url:
+                    self.db.execute('UPDATE documents SET url=? WHERE key=?', (clean, key))
 
     def ingest(self, doc: Document):
+        doc.url = safe_public_url(doc.url)
         text = semantic_lines(doc.text)
         if len(normalize(text)) < 40:
             raise ValueError(f'refusing short/empty document: {doc.key}')
