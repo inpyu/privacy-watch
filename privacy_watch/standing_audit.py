@@ -57,7 +57,7 @@ def audit_current_rules(store, seen_keys, today=None):
     store.db.executescript(AUDIT_SCHEMA)
     docs = current_documents(store, seen_keys)
     laws = [d for d in docs if d["category"] in ("law","decree","notice") and
-            current_effective(d, today)]
+            current_effective(d, today) and d["key"] != "privacy-impact-standard"]
     policies = [d for d in docs if d["category"] == "policy"]
     fresh = []
     now = datetime.now(timezone.utc).isoformat()
@@ -65,10 +65,21 @@ def audit_current_rules(store, seen_keys, today=None):
         for law in laws:
             for policy in policies:
                 for topic, spec in TOPICS.items():
-                    law_terms = [w for w in spec["terms"] if w in law["text"]]
-                    policy_terms = [w for w in spec["policy_terms"] if w in policy["text"]]
-                    if not law_terms or not policy_terms:
+                    # Use operative clauses only; skip ministry metadata and document indexes.
+                    clauses = law["text"].split("조문내용:")[1:]
+                    if not clauses:
                         continue
+                    phrases = tuple(w for w in spec["terms"]
+                                    if not (topic == "data_portability" and w == "정보주체"))
+                    matched = [(clause, term) for clause in clauses
+                               for term in phrases if term in clause]
+                    # Public-sector-only obligations must not be mapped to a private service.
+                    matched = [(clause, term) for clause, term in matched
+                               if not ("공공기관" in clause and "개인정보처리자" not in clause)]
+                    policy_terms = [w for w in spec["policy_terms"] if w in policy["text"]]
+                    if not matched or not policy_terms:
+                        continue
+                    clause, law_term = matched[0]
                     fingerprint = hashlib.sha256(
                         f'{law["key"]}|{law["content_hash"]}|{policy["key"]}|{policy["content_hash"]}|{topic}'.encode()
                     ).hexdigest()[:24]
@@ -89,7 +100,7 @@ def audit_current_rules(store, seen_keys, today=None):
                         "kind": "current_rule_policy_review",
                         "law": {"key": law["key"], "title": law["title"], "url":law["url"],
                                 "hash":law["content_hash"],"effective":law["metadata"].get("effective"),
-                                "evidence_excerpt": excerpt(law["text"], law_terms[0])},
+                                "evidence_excerpt": excerpt(clause, law_term)},
                         "policy": {"key":policy["key"],"title":policy["title"],"url":policy["url"],
                                    "hash":policy["content_hash"],
                                    "evidence_excerpt":excerpt(policy["text"],policy_terms[0])},
@@ -103,6 +114,7 @@ def audit_current_rules(store, seen_keys, today=None):
                             "허가되지 않은 로그인 자동화·침투 테스트·스캐닝 수행 금지"
                         ],
                         "status":"unverified_document_overlap",
+                        "applicability":"requires_human_legal_review",
                         "confidence":"low_keyword_evidence",
                         "reportable_violation":False,
                     })
