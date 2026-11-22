@@ -20,16 +20,14 @@ jobs:
           cache: pip
       - run: pip install -r requirements.txt
       - run: python -m pytest -q
-      - name: Collect and analyze
+      - name: Collect and detect changes
         id: collect
         continue-on-error: true
         env:
           LAW_API_OC: ${{ secrets.LAW_API_OC }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-4.1-mini' }}
         run: |
           mkdir -p data reports
-          python -m privacy_watch --llm
+          python -m privacy_watch
       - name: Save snapshot and reports
         if: always()
         run: |
