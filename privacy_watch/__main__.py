@@ -9,13 +9,14 @@ from .collectors import Fetcher, fetch_web, fetch_pipc, fetch_law
 from .analysis import analyze
 from .report import create_reports
 from .impact import build_candidates, policy_snapshots
+from .standing_audit import audit_current_rules
 
 
 def run(config, db_path, report_dir, llm=False, delay=1.0):
     settings = yaml.safe_load(Path(config).read_text(encoding='utf-8'))
     store = Store(db_path)
     fetcher = Fetcher(delay=delay)
-    events, failures = [], []
+    events, failures, seen_keys = [], [], set()
     try:
         groups = [
             ('web', lambda x: fetch_web(x, fetcher)),
@@ -31,6 +32,7 @@ def run(config, db_path, report_dir, llm=False, delay=1.0):
                         raise ValueError('no documents discovered')
                     for doc in docs:
                         event = store.ingest(doc)
+                        seen_keys.add(doc.key)
                         if event:
                             if event['kind'] == 'changed':
                                 event['analysis'] = analyze(event, enabled=llm)
@@ -42,7 +44,8 @@ def run(config, db_path, report_dir, llm=False, delay=1.0):
                     store.failure(source['id'], err['error'])
                     print('ERROR', json.dumps(err, ensure_ascii=False), flush=True)
         candidates = build_candidates(events, policy_snapshots(store))
-        summary = create_reports(events, failures, report_dir, candidates=candidates)
+        standing = audit_current_rules(store, seen_keys)
+        summary = create_reports(events, failures, report_dir, candidates=candidates, standing_audits=standing)
         print(json.dumps({k: summary[k] for k in ('baseline_count', 'change_count', 'failures')},
                          ensure_ascii=False, default=str), flush=True)
         return 1 if failures else 0
