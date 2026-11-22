@@ -1,46 +1,11 @@
 {
-  "generated_at_utc": "2026-11-22T05:13:32.419638+00:00",
+  "generated_at_utc": "2026-11-22T05:17:31.889132+00:00",
   "scope": "public documents only",
-  "baseline_count": 2,
+  "baseline_count": 0,
   "change_count": 0,
-  "changes": [
-    {
-      "id": 22,
-      "key": "security-standard",
-      "title": "개인정보의 안전성 확보조치 기준",
-      "category": "notice",
-      "url": "https://www.law.go.kr/DRF/lawService.do?target=admrul&type=XML&ID=2100000281400",
-      "kind": "baseline",
-      "diff": "",
-      "metadata": {
-        "retrieval": "law_api",
-        "law_id": "73493",
-        "mst": "2100000281400",
-        "promulgation": null,
-        "effective": "20260701",
-        "search_target": "admrul",
-        "query": "개인정보의 안전성 확보조치 기준"
-      }
-    },
-    {
-      "id": 23,
-      "key": "privacy-impact-standard",
-      "title": "개인정보 영향평가에 관한 고시",
-      "category": "notice",
-      "url": "https://www.law.go.kr/DRF/lawService.do?target=admrul&type=XML&ID=2100000263712",
-      "kind": "baseline",
-      "diff": "",
-      "metadata": {
-        "retrieval": "law_api",
-        "law_id": "73485",
-        "mst": "2100000263712",
-        "promulgation": null,
-        "effective": "20250905",
-        "search_target": "admrul",
-        "query": "개인정보 영향평가에 관한 고시"
-      }
-    }
-  ],
+  "changes": [],
   "failures": [],
+  "risk_candidates": [],
+  "risk_candidate_count": 0,
   "disclaimer": "자동 변경 탐지; 법률 위반 판정 아님"
 }
