@@ -10,6 +10,7 @@ def create_reports(events, failures, outdir, candidates=None, standing_audits=No
     candidates = candidates or []
     standing_audits = standing_audits or []
     report = {'generated_at_utc': timestamp, 'scope': 'public documents only',
+              'collection_status': 'partial_failure' if failures else 'completed',
               'baseline_count': sum(e['kind'] == 'baseline' for e in events),
               'change_count': sum(e['kind'] == 'changed' for e in events),
               'changes': [{k: v for k, v in e.items() if k != 'text'} for e in events],
@@ -19,7 +20,8 @@ def create_reports(events, failures, outdir, candidates=None, standing_audits=No
     (path / 'latest.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
     lines = ['# Privacy Watch — 일일 점검', '', f'- 생성(UTC): {timestamp}',
              f'- 최초 수집: {report["baseline_count"]}건', f'- 변경 감지: {report["change_count"]}건',
-             f'- 수집 실패: {len(failures)}건', '',
+             f'- 수집 실패: {len(failures)}건',
+             f'- 수집 상태: {report["collection_status"]}', '',
              '> 자동 변경 탐지 결과이며 법률 위반 또는 프라이버시 취약점 확정이 아닙니다.', '']
     for e in events:
         if e['kind'] != 'changed':
@@ -33,7 +35,9 @@ def create_reports(events, failures, outdir, candidates=None, standing_audits=No
                   '- 주의: ' + ('; '.join(a.get('caveats', [])) or '원문 대조 필요'), '',
                   '```diff', e['diff'][:12000].replace('```', "'''"), '```', '']
     if not report['change_count']:
-        lines += ['## 변경 사항', '', '이번 실행에서 변경을 확인하지 못했습니다. 실패한 수집원은 아래에서 확인하세요.', '']
+        lines += ['## 변경 사항', '',
+                  '수집 실패가 있어 전체 변경 없음으로 판단할 수 없습니다.' if failures
+                  else '이번 실행에서 신규 변경을 확인하지 못했습니다.', '']
     if candidates:
         lines += ['## Phase 2/3 — 법률 영향 및 프라이버시 검증 가설', '',
                   '> 키워드 기반 검토 후보일 뿐 실제 법률 의무나 취약점의 증거가 아닙니다.', '']
