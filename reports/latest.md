@@ -808,4 +808,4 @@ TIP!
 
 ## 수집 실패 (확인 필요)
 
-- `pipa`: ConnectionError: HTTPSConnectionPool(host='www.law.go.kr', port=443): Max retries exceeded with url: /DRF/lawSearch.do?OC=dayeon620&target=law&type=XML&query=%EA%B0%9C%EC%9D%B8%EC%A0%95%EB%B3%B4+%EB%B3%B4%ED%98%B8%EB%B2%95&display=100 (Caused by NameResolutionError("HTTPSConnection(host='www.law.go.kr', port=443): Failed to resolve 'www.law.go.kr' ([Errno -3] Temporary failure in name resolution)"))
+- `pipa`: ConnectionError: HTTPSConnectionPool(host='www.law.go.kr', port=443): Max retries exceeded with url: /DRF/lawSearch.do?OC=[REDACTED]&target=law&type=XML&query=%EA%B0%9C%EC%9D%B8%EC%A0%95%EB%B3%B4+%EB%B3%B4%ED%98%B8%EB%B2%95&display=100 (Caused by NameResolutionError("HTTPSConnection(host='www.law.go.kr', port=443): Failed to resolve 'www.law.go.kr' ([Errno -3] Temporary failure in name resolution)"))
