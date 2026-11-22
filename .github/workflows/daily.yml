@@ -11,13 +11,17 @@ concurrency:
 jobs:
   monitor:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 55
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: pip
+      - name: Install safe document extraction tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends libreoffice-core libreoffice-writer libreoffice-calc libreoffice-impress tesseract-ocr tesseract-ocr-kor poppler-utils
       - run: pip install -r requirements.txt
       - run: python -m pytest -q
       - name: Collect and detect changes
