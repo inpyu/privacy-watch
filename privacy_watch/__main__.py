@@ -9,7 +9,7 @@ from .collectors import Fetcher, fetch_web, fetch_pipc, fetch_law
 from .analysis import analyze
 from .report import create_reports
 from .impact import build_candidates, policy_snapshots
-from .standing_audit import audit_current_rules
+from .standing_audit import audit_current_rules, audit_pipc_guidelines
 
 
 def run(config, db_path, report_dir, llm=False, delay=1.0):
@@ -45,7 +45,9 @@ def run(config, db_path, report_dir, llm=False, delay=1.0):
                     print('ERROR', json.dumps(err, ensure_ascii=False), flush=True)
         candidates = build_candidates(events, policy_snapshots(store))
         standing = audit_current_rules(store, seen_keys)
-        summary = create_reports(events, failures, report_dir, candidates=candidates, standing_audits=standing)
+        guideline_reviews = audit_pipc_guidelines(store, seen_keys)
+        summary = create_reports(events, failures, report_dir, candidates=candidates,
+                                 standing_audits=standing, guideline_reviews=guideline_reviews)
         print(json.dumps({k: summary[k] for k in ('baseline_count', 'change_count', 'failures')},
                          ensure_ascii=False, default=str), flush=True)
         return 1 if failures else 0
