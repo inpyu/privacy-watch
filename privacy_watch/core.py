@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 import difflib
 import hashlib
+import os
 import json
 import re
 import sqlite3
@@ -73,6 +74,17 @@ def semantic_lines(text: str) -> str:
     return '\n'.join(x.strip() for x in text.splitlines() if x.strip())
 
 
+def sanitize_error(message: str) -> str:
+    """Redact known OC and query-string credentials before persistence."""
+    value = str(message)
+    oc = os.getenv("LAW_API_OC")
+    if oc:
+        value = value.replace(oc, "[REDACTED]")
+    value = re.sub(r"(?i)(OC|api_key|apikey|token|key)=[^&\s\)\x22\x27]+",
+                   lambda m: m.group(1) + "=[REDACTED]", value)
+    return value[:1500]
+
+
 def safe_public_url(url: str) -> str:
     parts = urlsplit(url)
     query = urlencode([(k, v) for k, v in parse_qsl(parts.query, keep_blank_values=True)
@@ -92,6 +104,10 @@ class Store:
                 clean = safe_public_url(url)
                 if clean != url:
                     self.db.execute('UPDATE documents SET url=? WHERE key=?', (clean, key))
+            for id_, error in self.db.execute('SELECT id, error FROM failures').fetchall():
+                safe = sanitize_error(error)
+                if safe != error:
+                    self.db.execute('UPDATE failures SET error=? WHERE id=?', (safe, id_))
 
     def ingest(self, doc: Document):
         doc.url = safe_public_url(doc.url)
@@ -129,7 +145,7 @@ class Store:
     def failure(self, key, exc):
         with self.db:
             self.db.execute('INSERT INTO failures(source_key,error,observed_at) VALUES(?,?,?)',
-                            (key, str(exc)[:1500], now_iso()))
+                            (key, sanitize_error(exc), now_iso()))
 
     def close(self):
         self.db.close()
