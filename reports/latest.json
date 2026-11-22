@@ -9,7 +9,7 @@
       "key": "pipa",
       "title": "개인정보 보호법",
       "category": "law",
-      "url": "https://www.law.go.kr/DRF/lawService.do?OC=dayeon620&target=law&type=XML&ID=011357",
+      "url": "https://www.law.go.kr/DRF/lawService.do?target=law&type=XML&ID=011357",
       "kind": "baseline",
       "diff": "",
       "metadata": {
@@ -27,7 +27,7 @@
       "key": "pipa-decree",
       "title": "개인정보 보호법 시행령",
       "category": "decree",
-      "url": "https://www.law.go.kr/DRF/lawService.do?OC=dayeon620&target=law&type=XML&ID=011468",
+      "url": "https://www.law.go.kr/DRF/lawService.do?target=law&type=XML&ID=011468",
       "kind": "baseline",
       "diff": "",
       "metadata": {
