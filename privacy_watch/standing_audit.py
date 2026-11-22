@@ -130,7 +130,7 @@ def audit_pipc_guidelines(store, seen_keys):
     store.db.executescript(AUDIT_SCHEMA)
     docs = current_documents(store, seen_keys)
     guides = [d for d in docs if d["category"] in ("guide", "interpretation")
-              and d["metadata"].get("retrieval") in ("pdf", "attachment", "pipc_article")
+              and d["metadata"].get("retrieval") in ("pdf", "attachment", "pipc_article", "manual_verified_excerpt")
               and len(d["text"].strip()) >= 250]
     policies = [d for d in docs if d["category"] == "policy"]
     results = []
@@ -181,6 +181,8 @@ def audit_pipc_guidelines(store, seen_keys):
                         "review_question": spec["question"],
                         "verification_checklist": spec["checks"],
                         "legal_status": "non_binding_guidance_unless_independently_grounded",
+                        "evidence_coverage": guide["metadata"].get("evidence_coverage", "source_text_extracted"),
+                        "source_sha256": guide["metadata"].get("source_sha256"),
                         "required_legal_validation": [
                             "안내서 발행기관·버전·발행일 및 현행성 검증",
                             "안내서가 설명하는 실제 법률·시행령·고시 조문 확인",
