@@ -11,9 +11,9 @@ def test_curated_2026_guide_ingested_and_compared(tmp_path):
     docs = load_manual_source({"path":"evidence/manual/pipc_safety_2026_11.yaml"}, root / "config")
     assert len(docs) == 1
     guide = docs[0]
-    assert guide.meta["retrieval"] == "manual_verified_excerpt"
-    assert guide.meta["source_sha256"] == "de6ccb63b92f6cef0ad943f40245acbbfe165f5661d8f183d7b722e301bbfc73"
-    assert guide.meta["evidence_coverage"] == "selected_excerpts_not_full_document"
+    assert guide.metadata["retrieval"] == "manual_verified_excerpt"
+    assert guide.metadata["source_sha256"] == "de6ccb63b92f6cef0ad943f40245acbbfe165f5661d8f183d7b722e301bbfc73"
+    assert guide.metadata["evidence_coverage"] == "selected_excerpts_not_full_document"
     assert "암호화" in guide.text
     store = Store(tmp_path / "audit.sqlite3")
     store.ingest(guide)
