@@ -7,6 +7,8 @@ import time
 from urllib.parse import urljoin, urlparse, parse_qs, parse_qsl, urlencode, urlsplit, urlunsplit
 import xml.etree.ElementTree as ET
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 from bs4 import BeautifulSoup
 from pypdf import PdfReader
 from .core import Document, normalize
@@ -18,24 +20,40 @@ class Fetcher:
     def __init__(self, delay=1.0, timeout=25):
         self.session = requests.Session()
         self.session.headers.update({'User-Agent': UA, 'Accept-Language': 'ko,en;q=0.7'})
+        # Retry transient network, DNS and server failures only; never retry 4xx auth errors.
+        retry = Retry(total=3, connect=3, read=2, status=2, backoff_factor=0.7,
+                      status_forcelist=(429, 500, 502, 503, 504),
+                      allowed_methods=frozenset(('GET',)),
+                      respect_retry_after_header=True)
+        self.session.mount('https://', HTTPAdapter(max_retries=retry))
         self.delay, self.timeout = delay, timeout
 
     def get(self, url, params=None, max_bytes=12_000_000):
+        """Read explicitly configured public HTTPS pages; never expose credential URLs."""
+        host = urlsplit(url).hostname
+        if urlsplit(url).scheme != 'https':
+            raise ValueError('HTTPS required')
         if self.delay:
             time.sleep(self.delay)
-        r = self.session.get(url, params=params, timeout=self.timeout, allow_redirects=True,
-                             stream=True)
-        r.raise_for_status()
-        if r.url.split(':')[0] != 'https':
-            raise ValueError(f'HTTPS required; redirected to {r.url}')
-        if int(r.headers.get('Content-Length', '0')) > max_bytes:
-            raise ValueError('response too large')
-        data = bytearray()
-        for chunk in r.iter_content(65536):
-            data.extend(chunk)
-            if len(data) > max_bytes:
-                raise ValueError('response exceeded limit')
-        return bytes(data), r.url
+        try:
+            with self.session.get(url, params=params, timeout=self.timeout,
+                                  allow_redirects=True, stream=True) as r:
+                r.raise_for_status()
+                if urlsplit(r.url).scheme != 'https':
+                    raise ValueError('HTTPS required after redirect')
+                if int(r.headers.get('Content-Length', '0')) > max_bytes:
+                    raise ValueError('response too large')
+                data = bytearray()
+                for chunk in r.iter_content(65536):
+                    data.extend(chunk)
+                    if len(data) > max_bytes:
+                        raise ValueError('response exceeded limit')
+                return bytes(data), public_source_url(r.url)
+        except requests.RequestException as exc:
+            # requests/urllib3 exception messages include request URLs and OC tokens.
+            code = getattr(getattr(exc, 'response', None), 'status_code', None)
+            kind = f'HTTP {code}' if code else type(exc).__name__
+            raise ConnectionError(f'public-source retrieval failed ({host}; {kind}); retry exhausted') from None
 
 
 def decode_html(data):
