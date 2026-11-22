@@ -19,7 +19,7 @@ jobs:
           python-version: '3.11'
           cache: pip
       - run: pip install -r requirements.txt
-      - run: pytest -q
+      - run: python -m pytest -q
       - name: Collect and analyze
         id: collect
         continue-on-error: true
