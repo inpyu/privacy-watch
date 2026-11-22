@@ -46,3 +46,7 @@ administrative_rules:
     title: 개인정보 영향평가에 관한 고시
     query: 개인정보 영향평가에 관한 고시
     category: notice
+
+# Manually verified partial evidence, not a claim of whole-guide coverage.
+manual:
+  - path: evidence/manual/pipc_safety_2026_11.yaml
