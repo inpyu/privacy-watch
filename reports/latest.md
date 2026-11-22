@@ -1,9 +1,9 @@
 # Privacy Watch — 일일 점검
 
-- 생성(UTC): 2026-11-22T05:03:05.051149+00:00
-- 최초 수집: 19건
+- 생성(UTC): 2026-11-22T05:10:15.916213+00:00
+- 최초 수집: 2건
 - 변경 감지: 0건
-- 수집 실패: 4건
+- 수집 실패: 2건
 
 > 자동 변경 탐지 결과이며 법률 위반 또는 프라이버시 취약점 확정이 아닙니다.
 
@@ -13,7 +13,5 @@
 
 ## 수집 실패 (확인 필요)
 
-- `pipa`: ValueError: LAW_API_OC missing: register for the official law.go.kr API
-- `pipa-decree`: ValueError: LAW_API_OC missing: register for the official law.go.kr API
-- `security-standard`: ValueError: LAW_API_OC missing: register for the official law.go.kr API
-- `privacy-impact-standard`: ValueError: LAW_API_OC missing: register for the official law.go.kr API
+- `security-standard`: ValueError: official law response unexpectedly short
+- `privacy-impact-standard`: ValueError: official law response unexpectedly short

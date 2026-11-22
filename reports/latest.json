@@ -1,258 +1,54 @@
 {
-  "generated_at_utc": "2026-11-22T05:03:05.051149+00:00",
+  "generated_at_utc": "2026-11-22T05:10:15.916213+00:00",
   "scope": "public documents only",
-  "baseline_count": 19,
+  "baseline_count": 2,
   "change_count": 0,
   "changes": [
     {
-      "id": 1,
-      "key": "naver-privacy",
-      "title": "네이버 개인정보 처리방침",
-      "category": "policy",
-      "url": "https://policy.naver.com/policy/privacy.html",
+      "id": 20,
+      "key": "pipa",
+      "title": "개인정보 보호법",
+      "category": "law",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=dayeon620&target=law&type=XML&ID=011357",
       "kind": "baseline",
       "diff": "",
       "metadata": {
-        "retrieval": "html",
-        "selector": "main"
+        "retrieval": "law_api",
+        "law_id": "011357",
+        "mst": "283839",
+        "promulgation": "20260310",
+        "effective": "20260911",
+        "search_target": "law",
+        "query": "개인정보 보호법"
       }
     },
     {
-      "id": 2,
-      "key": "naver-privacy-center",
-      "title": "네이버 프라이버시 센터 - 원칙",
-      "category": "policy",
-      "url": "https://privacy.naver.com/policy/principle/privacy-policy",
+      "id": 21,
+      "key": "pipa-decree",
+      "title": "개인정보 보호법 시행령",
+      "category": "decree",
+      "url": "https://www.law.go.kr/DRF/lawService.do?OC=dayeon620&target=law&type=XML&ID=011468",
       "kind": "baseline",
       "diff": "",
       "metadata": {
-        "retrieval": "html",
-        "selector": null
-      }
-    },
-    {
-      "id": 3,
-      "key": "naver-per-guide",
-      "title": "네이버 PER 안내",
-      "category": "policy",
-      "url": "https://privacy.naver.com/persystem/persystem/guide",
-      "kind": "baseline",
-      "diff": "",
-      "metadata": {
-        "retrieval": "html",
-        "selector": null
-      }
-    },
-    {
-      "id": 4,
-      "key": "naver-mybox-privacy",
-      "title": "네이버 MYBOX 개인정보 관련 정책 소개",
-      "category": "policy",
-      "url": "https://help.naver.com/service/30007/contents/17173?osType=COMMONOS",
-      "kind": "baseline",
-      "diff": "",
-      "metadata": {
-        "retrieval": "html",
-        "selector": null
-      }
-    },
-    {
-      "id": 5,
-      "key": "pipc-guides:index",
-      "title": "개인정보보호위원회 안내서 목록",
-      "category": "guide",
-      "url": "https://pipc.go.kr/np/cop/bbs/selectBoardList.do?bbsId=BS217&mCode=G010030000",
-      "kind": "baseline",
-      "diff": "",
-      "metadata": {
-        "retrieval": "pipc_index"
-      }
-    },
-    {
-      "id": 6,
-      "key": "pipc-guides:article:11429",
-      "title": "[현재 안내서] 개인정보 안내서 전체 목록('26.3.31. 기준)",
-      "category": "guide",
-      "url": "https://pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS217&nttId=11429",
-      "kind": "baseline",
-      "diff": "",
-      "metadata": {
-        "retrieval": "pipc_article"
-      }
-    },
-    {
-      "id": 7,
-      "key": "pipc-guides:article:12353",
-      "title": "[현재 안내서] 개인정보위 안내서 전체 목록(260731 기준)",
-      "category": "guide",
-      "url": "https://pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS217&nttId=12353",
-      "kind": "baseline",
-      "diff": "",
-      "metadata": {
-        "retrieval": "pipc_article"
-      }
-    },
-    {
-      "id": 8,
-      "key": "pipc-guides:article:12605",
-      "title": "[현재 안내서] 개인정보위 안내서 전체 목록('26.10.30. 기준)",
-      "category": "guide",
-      "url": "https://pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS217&nttId=12605",
-      "kind": "baseline",
-      "diff": "",
-      "metadata": {
-        "retrieval": "pipc_article"
-      }
-    },
-    {
-      "id": 9,
-      "key": "pipc-guides:article:12619",
-      "title": "[현재 안내서] 개인정보관리 전문기관 지정 안내서 및 신청 관련 양식",
-      "category": "guide",
-      "url": "https://pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS217&nttId=12619",
-      "kind": "baseline",
-      "diff": "",
-      "metadata": {
-        "retrieval": "pipc_article"
-      }
-    },
-    {
-      "id": 10,
-      "key": "pipc-guides:article:12611",
-      "title": "[현재 안내서] 개인정보의 안전성 확보조치 기준 안내서(2026.11.)",
-      "category": "guide",
-      "url": "https://pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS217&nttId=12611",
-      "kind": "baseline",
-      "diff": "",
-      "metadata": {
-        "retrieval": "pipc_article"
-      }
-    },
-    {
-      "id": 11,
-      "key": "pipc-guides:article:12504",
-      "title": "[기타 자료] 2025 가명정보 활용 우수사례집",
-      "category": "guide",
-      "url": "https://pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS217&nttId=12504",
-      "kind": "baseline",
-      "diff": "",
-      "metadata": {
-        "retrieval": "pipc_article"
-      }
-    },
-    {
-      "id": 12,
-      "key": "pipc-guides:article:12501",
-      "title": "[현재 안내서] 개인정보 보호책임자 지정·신고 실무 매뉴얼(2026.9.)",
-      "category": "guide",
-      "url": "https://pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS217&nttId=12501",
-      "kind": "baseline",
-      "diff": "",
-      "metadata": {
-        "retrieval": "pipc_article"
-      }
-    },
-    {
-      "id": 13,
-      "key": "pipc-guides:article:12468",
-      "title": "[현재 안내서] 과징금 투자감경제도 안내서",
-      "category": "guide",
-      "url": "https://pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS217&nttId=12468",
-      "kind": "baseline",
-      "diff": "",
-      "metadata": {
-        "retrieval": "pipc_article"
-      }
-    },
-    {
-      "id": 14,
-      "key": "pipc-guides:article:12465",
-      "title": "[현재 안내서] 개인정보 유출등 대응 안내서(2026.9.)",
-      "category": "guide",
-      "url": "https://pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS217&nttId=12465",
-      "kind": "baseline",
-      "diff": "",
-      "metadata": {
-        "retrieval": "pipc_article"
-      }
-    },
-    {
-      "id": 15,
-      "key": "pipc-guides:article:12436",
-      "title": "[현재 안내서] 공공 AX 프라이버시 보호 안내서(2026.7.)",
-      "category": "guide",
-      "url": "https://pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS217&nttId=12436",
-      "kind": "baseline",
-      "diff": "",
-      "metadata": {
-        "retrieval": "pipc_article"
-      }
-    },
-    {
-      "id": 16,
-      "key": "pipc-guides:article:12199",
-      "title": "[현재 안내서] (전 분야 마이데이터) 개인정보 전송요구권 제도 안내서(2026.6. 개정)",
-      "category": "guide",
-      "url": "https://pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS217&nttId=12199",
-      "kind": "baseline",
-      "diff": "",
-      "metadata": {
-        "retrieval": "pipc_article"
-      }
-    },
-    {
-      "id": 17,
-      "key": "pipc-guides:article:12183",
-      "title": "[현재 안내서] 보건의료데이터 활용 가이드라인(2025.12.)",
-      "category": "guide",
-      "url": "https://pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS217&nttId=12183",
-      "kind": "baseline",
-      "diff": "",
-      "metadata": {
-        "retrieval": "pipc_article"
-      }
-    },
-    {
-      "id": 18,
-      "key": "pipc-guides:article:12018",
-      "title": "[현재 안내서] 개인정보 처리방침 작성지침(2026.4. 개정)",
-      "category": "guide",
-      "url": "https://pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS217&nttId=12018",
-      "kind": "baseline",
-      "diff": "",
-      "metadata": {
-        "retrieval": "pipc_article"
-      }
-    },
-    {
-      "id": 19,
-      "key": "pipc-interpretations:index",
-      "title": "개인정보보호위원회 법령 및 해석자료 검색 시작점 목록",
-      "category": "interpretation",
-      "url": "https://pipc.go.kr/np/default/page.do?mCode=D020010000",
-      "kind": "baseline",
-      "diff": "",
-      "metadata": {
-        "retrieval": "pipc_index"
+        "retrieval": "law_api",
+        "law_id": "011468",
+        "mst": "291731",
+        "promulgation": "20261110",
+        "effective": "20261110",
+        "search_target": "law",
+        "query": "개인정보 보호법 시행령"
       }
     }
   ],
   "failures": [
     {
-      "source": "pipa",
-      "error": "ValueError: LAW_API_OC missing: register for the official law.go.kr API"
-    },
-    {
-      "source": "pipa-decree",
-      "error": "ValueError: LAW_API_OC missing: register for the official law.go.kr API"
-    },
-    {
       "source": "security-standard",
-      "error": "ValueError: LAW_API_OC missing: register for the official law.go.kr API"
+      "error": "ValueError: official law response unexpectedly short"
     },
     {
       "source": "privacy-impact-standard",
-      "error": "ValueError: LAW_API_OC missing: register for the official law.go.kr API"
+      "error": "ValueError: official law response unexpectedly short"
     }
   ],
   "disclaimer": "자동 변경 탐지; 법률 위반 판정 아님"
