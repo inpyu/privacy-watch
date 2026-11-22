@@ -4,7 +4,7 @@ from io import BytesIO
 import hashlib
 import re
 import time
-from urllib.parse import urljoin, urlparse, parse_qs
+from urllib.parse import urljoin, urlparse, parse_qs, parse_qsl, urlencode, urlsplit, urlunsplit
 import xml.etree.ElementTree as ET
 import requests
 from bs4 import BeautifulSoup
@@ -91,6 +91,14 @@ def law_search_items(root, rule=False):
     return found
 
 
+def public_source_url(url):
+    """Strip credentials from URLs before saving them in public reports/database."""
+    parts = urlsplit(url)
+    safe_query = urlencode([(k, v) for k, v in parse_qsl(parts.query, keep_blank_values=True)
+                            if k.lower() not in ('oc', 'api_key', 'apikey', 'token', 'key')])
+    return urlunsplit((parts.scheme, parts.netloc, parts.path, safe_query, ''))
+
+
 def fetch_law(source, fetcher, oc, rule=False):
     """DRF XML search then full text; fail closed when exact match is absent."""
     if not oc:
@@ -109,7 +117,12 @@ def fetch_law(source, fetcher, oc, rule=False):
     law_id = candidate_value(el, ['법령ID', '행정규칙ID'])
     mst = candidate_value(el, ['법령일련번호', '행정규칙일련번호'])
     params = {'OC': oc, 'target': target, 'type': 'XML'}
-    params.update({'ID': law_id} if law_id else {'MST': mst or ident})
+    # Administrative-rule API uses ID = serial number and LID = stable rule ID.
+    # Statute API uses ID = law ID or MST = serial number.
+    if rule:
+        params.update({'ID': mst or ident} if (mst or ident) else {'LID': law_id})
+    else:
+        params.update({'ID': law_id} if law_id else {'MST': mst or ident})
     raw, url = fetcher.get(base + 'lawService.do', params)
     content = ET.fromstring(raw)
     text = flatten_xml(content)
@@ -119,7 +132,7 @@ def fetch_law(source, fetcher, oc, rule=False):
             'promulgation': candidate_value(el, ['공포일자']),
             'effective': candidate_value(el, ['시행일자']),
             'search_target': target, 'query': source['query']}
-    return [Document(source['id'], name, url, source['category'], text, meta)]
+    return [Document(source['id'], name, public_source_url(url), source['category'], text, meta)]
 
 
 def article_links(data, base_url):
