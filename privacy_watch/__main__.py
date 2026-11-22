@@ -10,6 +10,7 @@ from .analysis import analyze
 from .report import create_reports
 from .impact import build_candidates, policy_snapshots
 from .standing_audit import audit_current_rules, audit_pipc_guidelines
+from .manual_sources import load_manual_source
 
 
 def run(config, db_path, report_dir, llm=False, delay=1.0):
@@ -23,6 +24,7 @@ def run(config, db_path, report_dir, llm=False, delay=1.0):
             ('pipc', lambda x: fetch_pipc(x, fetcher)),
             ('laws', lambda x: fetch_law(x, fetcher, os.getenv('LAW_API_OC'))),
             ('administrative_rules', lambda x: fetch_law(x, fetcher, os.getenv('LAW_API_OC'), rule=True)),
+            ('manual', lambda x: load_manual_source(x, Path(config).parent)),
         ]
         for group, fn in groups:
             for source in settings.get(group, []):
