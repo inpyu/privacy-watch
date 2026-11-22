@@ -130,7 +130,7 @@ def audit_pipc_guidelines(store, seen_keys):
     store.db.executescript(AUDIT_SCHEMA)
     docs = current_documents(store, seen_keys)
     guides = [d for d in docs if d["category"] in ("guide", "interpretation")
-              and d["metadata"].get("retrieval") in ("pdf", "pipc_article")
+              and d["metadata"].get("retrieval") in ("pdf", "attachment", "pipc_article")
               and len(d["text"].strip()) >= 250]
     policies = [d for d in docs if d["category"] == "policy"]
     results = []
