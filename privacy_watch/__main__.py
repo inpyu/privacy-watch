@@ -8,6 +8,7 @@ from .core import Store
 from .collectors import Fetcher, fetch_web, fetch_pipc, fetch_law
 from .analysis import analyze
 from .report import create_reports
+from .impact import build_candidates, policy_snapshots
 
 
 def run(config, db_path, report_dir, llm=False, delay=1.0):
@@ -40,7 +41,8 @@ def run(config, db_path, report_dir, llm=False, delay=1.0):
                     failures.append(err)
                     store.failure(source['id'], err['error'])
                     print('ERROR', json.dumps(err, ensure_ascii=False), flush=True)
-        summary = create_reports(events, failures, report_dir)
+        candidates = build_candidates(events, policy_snapshots(store))
+        summary = create_reports(events, failures, report_dir, candidates=candidates)
         print(json.dumps({k: summary[k] for k in ('baseline_count', 'change_count', 'failures')},
                          ensure_ascii=False, default=str), flush=True)
         return 1 if failures else 0
