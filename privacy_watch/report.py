@@ -3,12 +3,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-def create_reports(events, failures, outdir, candidates=None, standing_audits=None):
+def create_reports(events, failures, outdir, candidates=None, standing_audits=None, guideline_reviews=None):
     path = Path(outdir)
     path.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now(timezone.utc).isoformat()
     candidates = candidates or []
     standing_audits = standing_audits or []
+    guideline_reviews = guideline_reviews or []
     report = {'generated_at_utc': timestamp, 'scope': 'public documents only',
               'collection_status': 'partial_failure' if failures else 'completed',
               'baseline_count': sum(e['kind'] == 'baseline' for e in events),
@@ -16,7 +17,9 @@ def create_reports(events, failures, outdir, candidates=None, standing_audits=No
               'changes': [{k: v for k, v in e.items() if k != 'text'} for e in events],
               'failures': failures, 'risk_candidates': candidates, 'risk_candidate_count': len(candidates),
               'standing_audits': standing_audits,
-              'standing_audit_count': len(standing_audits), 'disclaimer': '자동 변경 탐지; 법률 위반 판정 아님'}
+              'standing_audit_count': len(standing_audits),
+              'guideline_reviews': guideline_reviews,
+              'guideline_review_count': len(guideline_reviews), 'disclaimer': '자동 변경 탐지; 법률 위반 판정 아님'}
     (path / 'latest.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
     lines = ['# Privacy Watch — 일일 점검', '', f'- 생성(UTC): {timestamp}',
              f'- 최초 수집: {report["baseline_count"]}건', f'- 변경 감지: {report["change_count"]}건',
@@ -61,6 +64,18 @@ def create_reports(events, failures, outdir, candidates=None, standing_audits=No
                       f'- 법령 문맥: {item["law"]["evidence_excerpt"][:300]}',
                       f'- 정책 문맥: {item["policy"]["evidence_excerpt"][:300]}',
                       '- 상태: unverified_document_overlap (법률 위반 판정 아님)', '']
+    if guideline_reviews:
+        lines += ['## 개인정보보호위원회 안내서와 네이버 현행 정책 비교', '',
+                  '> 안내서는 해석·실무 참고자료이며, 법적 의무 여부는 법령과 별도 대조가 필요합니다.', '']
+        for item in guideline_reviews:
+            lines += [f'### {item["topic"]} ({item["audit_id"]})',
+                      f'- 개인정보위 안내서: {item["guideline"]["title"]} / {item["guideline"]["url"]}',
+                      f'- 네이버 정책: {item["policy"]["title"]} / {item["policy"]["url"]}',
+                      f'- 검토 질문: {item["review_question"]}',
+                      f'- 안내서 문맥: {item["guideline"]["evidence_excerpt"][:300]}',
+                      f'- 정책 문맥: {item["policy"]["evidence_excerpt"][:300]}',
+                      '- 법적 효력: 원칙적으로 참고자료; 실제 의무는 법령 확인 필요',
+                      '- 상태: unverified_guidance_policy_overlap (법 위반 판정 아님)', '']
     if failures:
         lines += ['## 수집 실패 (확인 필요)', '']
         for f in failures:
