@@ -1,55 +1,46 @@
 {
-  "generated_at_utc": "2026-11-22T05:10:15.916213+00:00",
+  "generated_at_utc": "2026-11-22T05:13:32.419638+00:00",
   "scope": "public documents only",
   "baseline_count": 2,
   "change_count": 0,
   "changes": [
     {
-      "id": 20,
-      "key": "pipa",
-      "title": "개인정보 보호법",
-      "category": "law",
-      "url": "https://www.law.go.kr/DRF/lawService.do?target=law&type=XML&ID=011357",
+      "id": 22,
+      "key": "security-standard",
+      "title": "개인정보의 안전성 확보조치 기준",
+      "category": "notice",
+      "url": "https://www.law.go.kr/DRF/lawService.do?target=admrul&type=XML&ID=2100000281400",
       "kind": "baseline",
       "diff": "",
       "metadata": {
         "retrieval": "law_api",
-        "law_id": "011357",
-        "mst": "283839",
-        "promulgation": "20260310",
-        "effective": "20260911",
-        "search_target": "law",
-        "query": "개인정보 보호법"
+        "law_id": "73493",
+        "mst": "2100000281400",
+        "promulgation": null,
+        "effective": "20260701",
+        "search_target": "admrul",
+        "query": "개인정보의 안전성 확보조치 기준"
       }
     },
     {
-      "id": 21,
-      "key": "pipa-decree",
-      "title": "개인정보 보호법 시행령",
-      "category": "decree",
-      "url": "https://www.law.go.kr/DRF/lawService.do?target=law&type=XML&ID=011468",
+      "id": 23,
+      "key": "privacy-impact-standard",
+      "title": "개인정보 영향평가에 관한 고시",
+      "category": "notice",
+      "url": "https://www.law.go.kr/DRF/lawService.do?target=admrul&type=XML&ID=2100000263712",
       "kind": "baseline",
       "diff": "",
       "metadata": {
         "retrieval": "law_api",
-        "law_id": "011468",
-        "mst": "291731",
-        "promulgation": "20261110",
-        "effective": "20261110",
-        "search_target": "law",
-        "query": "개인정보 보호법 시행령"
+        "law_id": "73485",
+        "mst": "2100000263712",
+        "promulgation": null,
+        "effective": "20250905",
+        "search_target": "admrul",
+        "query": "개인정보 영향평가에 관한 고시"
       }
     }
   ],
-  "failures": [
-    {
-      "source": "security-standard",
-      "error": "ValueError: official law response unexpectedly short"
-    },
-    {
-      "source": "privacy-impact-standard",
-      "error": "ValueError: official law response unexpectedly short"
-    }
-  ],
+  "failures": [],
   "disclaimer": "자동 변경 탐지; 법률 위반 판정 아님"
 }
