@@ -1,10 +1,37 @@
 {
-  "generated_at_utc": "2026-11-22T06:46:10.323543+00:00",
+  "generated_at_utc": "2026-11-22T17:24:15.459429+00:00",
   "scope": "public documents only",
   "collection_status": "partial_failure",
-  "baseline_count": 0,
+  "baseline_count": 1,
   "change_count": 0,
-  "changes": [],
+  "changes": [
+    {
+      "id": 24,
+      "key": "pipc-safety-guide-2026-11",
+      "title": "개인정보의 안전성 확보조치 기준 안내서 (2026.11)",
+      "category": "guide",
+      "url": "https://www.pipc.go.kr/np/default/page.do?mCode=D020010000",
+      "kind": "baseline",
+      "diff": "",
+      "metadata": {
+        "id": "pipc-safety-guide-2026-11",
+        "title": "개인정보의 안전성 확보조치 기준 안내서 (2026.11)",
+        "publisher": "개인정보보호위원회",
+        "published": "2026-11",
+        "source_sha256": "de6ccb63b92f6cef0ad943f40245acbbfe165f5661d8f183d7b722e301bbfc73",
+        "source_description": "User-supplied public 204-page PDF; analyst-curated topic summaries, NOT the full PDF text",
+        "source_url": "https://www.pipc.go.kr/np/default/page.do?mCode=D020010000",
+        "authority": "interpretive_guideline",
+        "retrieval": "manual_verified_excerpt",
+        "original_filename": "개인정보의 안전성 확보조치 기준 안내서(2026.11).pdf",
+        "page_count": 204,
+        "revision_basis": "개인정보보호위원회 고시 제2026-9호 (2026-07-01)",
+        "effective_notes": "고시 2026-07-01 시행. 단 제15조제5호·제18조는 2027-01-01 시행; 공공시스템운영기관 전용 별도 구분.",
+        "evidence_coverage": "selected_excerpts_not_full_document",
+        "review_status": "pending_official_version_confirmation"
+      }
+    }
+  ],
   "failures": [
     {
       "source": "pipc-guides",
@@ -15,7 +42,164 @@
   "risk_candidate_count": 0,
   "standing_audits": [],
   "standing_audit_count": 0,
-  "guideline_reviews": [],
-  "guideline_review_count": 0,
+  "guideline_reviews": [
+    {
+      "audit_id": "cd769c7cc9b8c77e1b6d6b30",
+      "kind": "pipc_guideline_policy_review",
+      "topic": "retention",
+      "guideline": {
+        "key": "pipc-safety-guide-2026-11",
+        "title": "개인정보의 안전성 확보조치 기준 안내서 (2026.11)",
+        "url": "https://www.pipc.go.kr/np/default/page.do?mCode=D020010000",
+        "hash": "4557f66222ee51723c2b73ed39fe31546b9bdf1bc4decf92a855c8bc32e6374d",
+        "retrieval": "manual_verified_excerpt",
+        "evidence_excerpt": ": 비인가 접근을 차단하고 외부접속의 안전한 인증수단, 미사용 세션 종료, 업무용 모바일 보호 등을 규정한다.\n제6조의2 인터넷망 차단: 일정 규모(일평균 이용자 100만명 이상) 개인정보처리자에서 권한 설정 또는 개인정보 다운로드·파기 권한이 있는 취급자의 컴퓨터 등에 인터넷망 차단을 규정한다. 다운로드·파기 업무의 일부 위험분석 기반 예외 및 민감정보 관련 예외 제한을 명시한다.\n제7조 개인정보 암호화: 비밀번호의 일방향 암호화 저장, 인증정보·특정 식별정보의"
+      },
+      "policy": {
+        "key": "naver-privacy",
+        "title": "네이버 개인정보 처리방침",
+        "url": "https://policy.naver.com/policy/privacy.html",
+        "hash": "dcfb5f2a9c2b1c9dbe005e0f3f02ef8ff558ed13e90fecc7e5ddc53ef6c027a3",
+        "evidence_excerpt": "원의 개인정보를 지체없이 파기합니다.\n아래와 같이 관련 법령에서 일정기간 정보 보관을 규정하고 있는 경우가 있으며, 네이버는 이 기간 동안 법령의 규정에 따라 개인정보를 보관하고, 다른 목적으로는 절대 이용하지 않습니다.\n관련 법령\n보유 정보\n보관 기간\n전자상거래 등에서의 소비자 보호에 관한 법률\n제6조(거래기록의 보존 등)ㆍ시행령\n제6조(사업자가 보존하는 거래기록의 대상 등)\n표시·광고에 관한 기록\n6개월\n계약 또는 청약철회 등에 관한 기록\n5년\n대금결제 및 재화"
+      },
+      "review_question": "서비스별 보유기간 및 삭제·파기 안내가 개정된 요구사항과 일치하는가?",
+      "verification_checklist": [
+        "처리방침 보존기간과 삭제 화면 비교",
+        "법정 보존 의무·예외 조사",
+        "본인 계정의 삭제 결과만 확인"
+      ],
+      "legal_status": "non_binding_guidance_unless_independently_grounded",
+      "evidence_coverage": "selected_excerpts_not_full_document",
+      "source_sha256": "de6ccb63b92f6cef0ad943f40245acbbfe165f5661d8f183d7b722e301bbfc73",
+      "required_legal_validation": [
+        "안내서 발행기관·버전·발행일 및 현행성 검증",
+        "안내서가 설명하는 실제 법률·시행령·고시 조문 확인",
+        "안내서의 권고와 법률상 강행 의무 구분",
+        "네이버 정책 문맥 및 적용대상·예외 검토",
+        "실제 위반 또는 기술적 취약점으로 단정 금지"
+      ],
+      "status": "unverified_guidance_policy_overlap",
+      "confidence": "low_keyword_evidence",
+      "reportable_violation": false
+    },
+    {
+      "audit_id": "a6b3531ac8b94ce83f4c0a8b",
+      "kind": "pipc_guideline_policy_review",
+      "topic": "security",
+      "guideline": {
+        "key": "pipc-safety-guide-2026-11",
+        "title": "개인정보의 안전성 확보조치 기준 안내서 (2026.11)",
+        "url": "https://www.pipc.go.kr/np/default/page.do?mCode=D020010000",
+        "hash": "4557f66222ee51723c2b73ed39fe31546b9bdf1bc4decf92a855c8bc32e6374d",
+        "retrieval": "manual_verified_excerpt",
+        "evidence_excerpt": "시행령\n제16조제2항,\n제30조,\n제30조의2를 설명하는 2026년 11월 발간 안내서. 2026년 7월 기준 개정을 반영한다.\n제3조 안전조치 적용 원칙: 개인정보 유형, 규모, 정보주체 영향과 처리 환경을 고려하여 위험에 맞는 안전성 확보조치를 적용한다.\n제4조 내부 관리계획: 관리계획 수립 시행, 개인정보취급자 교육 및 연 1회 이상 이행 점검을 설명하며 일부 소규모 처리자에게 예외가 존재한다.\n제5조 접근 권한 관리: 개인정보처리시스템 권한은 최소화하고 변경·말소"
+      },
+      "policy": {
+        "key": "naver-privacy",
+        "title": "네이버 개인정보 처리방침",
+        "url": "https://policy.naver.com/policy/privacy.html",
+        "hash": "dcfb5f2a9c2b1c9dbe005e0f3f02ef8ff558ed13e90fecc7e5ddc53ef6c027a3",
+        "evidence_excerpt": "과 관련성이 있는지 여부\n개인정보를 수집한 정황 또는 처리 관행에 비추어 볼 때 추가적인 이용∙제공에 대한 예측 가능성이 있는지 여부\n개인정보의 추가적인 이용∙제공이 사용자의 이익을 부당하게 침해하는지 여부\n가명처리 또는 암호화 등 안전성 확보에 필요한 조치를 하였는지 여부\n네이버 서비스는 물론 ‘네이버 페이‘와 ‘네이버 웹툰’ 등 네이버에서 제공하는 다양한 서비스를 안전하게 이용할 수 있도록 추가적으로 이용 또는 제공하고 있습니다.\n추가적인 이용 및 제공에 대한 안"
+      },
+      "review_question": "변경된 보안 의무의 적용 대상과 기술적 조치 범위가 일치하는가?",
+      "verification_checklist": [
+        "적용 대상과 기술적 의무·권고 구분",
+        "공개된 정책·운영 문서 확인",
+        "무단 침투·취약점 스캔 없이 검증"
+      ],
+      "legal_status": "non_binding_guidance_unless_independently_grounded",
+      "evidence_coverage": "selected_excerpts_not_full_document",
+      "source_sha256": "de6ccb63b92f6cef0ad943f40245acbbfe165f5661d8f183d7b722e301bbfc73",
+      "required_legal_validation": [
+        "안내서 발행기관·버전·발행일 및 현행성 검증",
+        "안내서가 설명하는 실제 법률·시행령·고시 조문 확인",
+        "안내서의 권고와 법률상 강행 의무 구분",
+        "네이버 정책 문맥 및 적용대상·예외 검토",
+        "실제 위반 또는 기술적 취약점으로 단정 금지"
+      ],
+      "status": "unverified_guidance_policy_overlap",
+      "confidence": "low_keyword_evidence",
+      "reportable_violation": false
+    },
+    {
+      "audit_id": "201155bb4abc1bbe3c5d8408",
+      "kind": "pipc_guideline_policy_review",
+      "topic": "retention",
+      "guideline": {
+        "key": "pipc-safety-guide-2026-11",
+        "title": "개인정보의 안전성 확보조치 기준 안내서 (2026.11)",
+        "url": "https://www.pipc.go.kr/np/default/page.do?mCode=D020010000",
+        "hash": "4557f66222ee51723c2b73ed39fe31546b9bdf1bc4decf92a855c8bc32e6374d",
+        "retrieval": "manual_verified_excerpt",
+        "evidence_excerpt": ": 비인가 접근을 차단하고 외부접속의 안전한 인증수단, 미사용 세션 종료, 업무용 모바일 보호 등을 규정한다.\n제6조의2 인터넷망 차단: 일정 규모(일평균 이용자 100만명 이상) 개인정보처리자에서 권한 설정 또는 개인정보 다운로드·파기 권한이 있는 취급자의 컴퓨터 등에 인터넷망 차단을 규정한다. 다운로드·파기 업무의 일부 위험분석 기반 예외 및 민감정보 관련 예외 제한을 명시한다.\n제7조 개인정보 암호화: 비밀번호의 일방향 암호화 저장, 인증정보·특정 식별정보의"
+      },
+      "policy": {
+        "key": "naver-privacy-center",
+        "title": "네이버 프라이버시 센터 - 원칙",
+        "url": "https://privacy.naver.com/policy/principle/privacy-policy",
+        "hash": "14388b39e00a9c272c8c506c525aaf2c2c530ccbdbfefe49e08a1a30e2d3929e",
+        "evidence_excerpt": "이용목적이 달성된 이용자의 개인정보는 지체없이, 그리고 안전하게 삭제합니다.\n* 단, 관계 법령에서 일정 기간 보관 의무를 규정하고 있는 경우는 예외로 합니다.\nCASE 1\n회원 탈퇴\nCASE 2\n서비스 종료\nCASE 3\n개인정보 보유기간 도래\n전자적 파일 형태: 복구·재생되지 않도록 기술적인 방법을 이용하여 삭제\n종이 출력 및 기록 형태: 파쇄·소각하여 삭제\n05 이용자의 권리 보호\n이용자의\n'개인정보 자기결정권'\n을 보장합니다.\n이용자는 언제든지 자신의 개인정"
+      },
+      "review_question": "서비스별 보유기간 및 삭제·파기 안내가 개정된 요구사항과 일치하는가?",
+      "verification_checklist": [
+        "처리방침 보존기간과 삭제 화면 비교",
+        "법정 보존 의무·예외 조사",
+        "본인 계정의 삭제 결과만 확인"
+      ],
+      "legal_status": "non_binding_guidance_unless_independently_grounded",
+      "evidence_coverage": "selected_excerpts_not_full_document",
+      "source_sha256": "de6ccb63b92f6cef0ad943f40245acbbfe165f5661d8f183d7b722e301bbfc73",
+      "required_legal_validation": [
+        "안내서 발행기관·버전·발행일 및 현행성 검증",
+        "안내서가 설명하는 실제 법률·시행령·고시 조문 확인",
+        "안내서의 권고와 법률상 강행 의무 구분",
+        "네이버 정책 문맥 및 적용대상·예외 검토",
+        "실제 위반 또는 기술적 취약점으로 단정 금지"
+      ],
+      "status": "unverified_guidance_policy_overlap",
+      "confidence": "low_keyword_evidence",
+      "reportable_violation": false
+    },
+    {
+      "audit_id": "e30a7e1ce277af7d83f819e1",
+      "kind": "pipc_guideline_policy_review",
+      "topic": "security",
+      "guideline": {
+        "key": "pipc-safety-guide-2026-11",
+        "title": "개인정보의 안전성 확보조치 기준 안내서 (2026.11)",
+        "url": "https://www.pipc.go.kr/np/default/page.do?mCode=D020010000",
+        "hash": "4557f66222ee51723c2b73ed39fe31546b9bdf1bc4decf92a855c8bc32e6374d",
+        "retrieval": "manual_verified_excerpt",
+        "evidence_excerpt": "시행령\n제16조제2항,\n제30조,\n제30조의2를 설명하는 2026년 11월 발간 안내서. 2026년 7월 기준 개정을 반영한다.\n제3조 안전조치 적용 원칙: 개인정보 유형, 규모, 정보주체 영향과 처리 환경을 고려하여 위험에 맞는 안전성 확보조치를 적용한다.\n제4조 내부 관리계획: 관리계획 수립 시행, 개인정보취급자 교육 및 연 1회 이상 이행 점검을 설명하며 일부 소규모 처리자에게 예외가 존재한다.\n제5조 접근 권한 관리: 개인정보처리시스템 권한은 최소화하고 변경·말소"
+      },
+      "policy": {
+        "key": "naver-privacy-center",
+        "title": "네이버 프라이버시 센터 - 원칙",
+        "url": "https://privacy.naver.com/policy/principle/privacy-policy",
+        "hash": "14388b39e00a9c272c8c506c525aaf2c2c530ccbdbfefe49e08a1a30e2d3929e",
+        "evidence_excerpt": "인번호 등\n- 계좌이체 시 : 은행명, 계좌번호\n- 상품권이용 시 : 상품권번호\n본인인증이 필요한 서비스 이용\n게임, 성인컨텐츠 이용 등 법률에 의해 본인인증이 필요한 경우에만 진행합니다.\n- 이름, 생년월일, 성별, 중복가입정보, 암호화된 동일인 식별정보, 휴대폰번호 및 통신사 (휴대폰 인증 시), 내·외국인 정보\n고객센터 이용\n문의하기 및 신고하기 기능을 이용할 경우 접수 및 처리를 위해 필요한 정보를 수집합니다.\n- 문의 유형에 따라 발신전화번호나 이메일 주소,"
+      },
+      "review_question": "변경된 보안 의무의 적용 대상과 기술적 조치 범위가 일치하는가?",
+      "verification_checklist": [
+        "적용 대상과 기술적 의무·권고 구분",
+        "공개된 정책·운영 문서 확인",
+        "무단 침투·취약점 스캔 없이 검증"
+      ],
+      "legal_status": "non_binding_guidance_unless_independently_grounded",
+      "evidence_coverage": "selected_excerpts_not_full_document",
+      "source_sha256": "de6ccb63b92f6cef0ad943f40245acbbfe165f5661d8f183d7b722e301bbfc73",
+      "required_legal_validation": [
+        "안내서 발행기관·버전·발행일 및 현행성 검증",
+        "안내서가 설명하는 실제 법률·시행령·고시 조문 확인",
+        "안내서의 권고와 법률상 강행 의무 구분",
+        "네이버 정책 문맥 및 적용대상·예외 검토",
+        "실제 위반 또는 기술적 취약점으로 단정 금지"
+      ],
+      "status": "unverified_guidance_policy_overlap",
+      "confidence": "low_keyword_evidence",
+      "reportable_violation": false
+    }
+  ],
+  "guideline_review_count": 4,
   "disclaimer": "자동 변경 탐지; 법률 위반 판정 아님"
 }
