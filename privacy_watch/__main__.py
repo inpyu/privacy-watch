@@ -5,12 +5,12 @@ import os
 from pathlib import Path
 import yaml
 from .core import Store, sanitize_error
-from .collectors import Fetcher, fetch_web, fetch_pipc, fetch_law
+from .collectors import Fetcher, fetch_web, fetch_law
 from .analysis import analyze
 from .report import create_reports
 from .impact import build_candidates, policy_snapshots
 from .standing_audit import audit_current_rules, audit_pipc_guidelines
-from .manual_sources import load_manual_source
+from .asset_sources import asset_sources, load_asset
 
 
 def run(config, db_path, report_dir, llm=False, delay=1.0):
@@ -21,11 +21,15 @@ def run(config, db_path, report_dir, llm=False, delay=1.0):
     try:
         groups = [
             ('web', lambda x: fetch_web(x, fetcher)),
-            ('pipc', lambda x: fetch_pipc(x, fetcher)),
             ('laws', lambda x: fetch_law(x, fetcher, os.getenv('LAW_API_OC'))),
             ('administrative_rules', lambda x: fetch_law(x, fetcher, os.getenv('LAW_API_OC'), rule=True)),
-            ('manual', lambda x: load_manual_source(x, Path(config).parent)),
+            ('assets', lambda x: load_asset(x, Path(config).resolve().parent.parent)),
         ]
+        try:
+            settings['assets'] = asset_sources(Path(config).resolve().parent.parent)
+        except Exception as exc:
+            failures.append({'source': 'assets', 'error': sanitize_error(str(exc))})
+            settings['assets'] = []
         for group, fn in groups:
             for source in settings.get(group, []):
                 try:
@@ -45,7 +49,7 @@ def run(config, db_path, report_dir, llm=False, delay=1.0):
                     failures.append(err)
                     store.failure(source['id'], err['error'])
                     print('ERROR', json.dumps(err, ensure_ascii=False), flush=True)
-        candidates = build_candidates(events, policy_snapshots(store))
+        candidates = build_candidates(events, [p for p in policy_snapshots(store) if p['key'] in seen_keys])
         standing = audit_current_rules(store, seen_keys)
         guideline_reviews = audit_pipc_guidelines(store, seen_keys)
         summary = create_reports(events, failures, report_dir, candidates=candidates,

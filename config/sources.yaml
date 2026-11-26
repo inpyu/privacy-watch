@@ -1,4 +1,4 @@
-# Edit URLs and titles here. The PIPC index discovers new guide posts.
+# Public law and policy sources; PDF evidence is local.
 web:
   - id: naver-privacy
     title: 네이버 개인정보 처리방침
@@ -17,17 +17,6 @@ web:
     title: 네이버 MYBOX 개인정보 관련 정책 소개
     url: https://help.naver.com/service/30007/contents/17173?osType=COMMONOS
     category: policy
-pipc:
-  - id: pipc-guides
-    title: 개인정보보호위원회 안내서
-    url: https://pipc.go.kr/np/cop/bbs/selectBoardList.do?bbsId=BS217&mCode=G010030000
-    category: guide
-    max_articles: 30
-  - id: pipc-interpretations
-    title: 개인정보보호위원회 법령 및 해석자료 검색 시작점
-    url: https://www.pipc.go.kr/np/default/page.do?mCode=D020010000
-    category: interpretation
-    max_articles: 10
 laws:
   - id: pipa
     title: 개인정보 보호법
@@ -47,6 +36,3 @@ administrative_rules:
     query: 개인정보 영향평가에 관한 고시
     category: notice
 
-# Manually verified partial evidence, not a claim of whole-guide coverage.
-manual:
-  - path: evidence/manual/pipc_safety_2026_11.yaml
