@@ -57,4 +57,6 @@ def review_evidence(store, seen_keys):
             "B":"미검증 후보", "C":"단순 키워드 일치"},
             "reportable_count": 0, "requires_chatgpt_legal_review": True}
     result["precision"] = precision_review(store, seen_keys, result)
+    from .obligations import obligation_review
+    result["obligations"] = obligation_review(store, seen_keys)
     return result

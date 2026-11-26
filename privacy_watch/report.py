@@ -88,6 +88,12 @@ def create_reports(events, failures, outdir, candidates=None, standing_audits=No
                   '- 자동 위반 확정: 0건 (법적 검증 필요)', '']
         for item in evidence_review["quality"]:
             lines.append(f'- {item["title"]}: {item["pages"]}쪽, 저텍스트 페이지 {item["low_text_pages"]}, 공식 출처 검증 대기')
+    if evidence_review and "obligations" in evidence_review:
+        obligations = evidence_review["obligations"]
+        lines += ["## Phase 6 — 법적 의무 검토 후보", "",
+                  f'- 신규 후보: {len(obligations["new_candidates"])}건',
+                  f'- 기존 후보 재사용: {obligations["reused_count"]}건',
+                  '- 캐시는 후보 생성 기록이며 법적 검토 완료를 의미하지 않음', ""]
     if failures:
         lines += ['## 수집 실패 (확인 필요)', '']
         for f in failures:
