@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-def create_reports(events, failures, outdir, candidates=None, standing_audits=None, guideline_reviews=None):
+def create_reports(events, failures, outdir, candidates=None, standing_audits=None, guideline_reviews=None, evidence_review=None):
     path = Path(outdir)
     path.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now(timezone.utc).isoformat()
@@ -19,7 +19,7 @@ def create_reports(events, failures, outdir, candidates=None, standing_audits=No
               'standing_audits': standing_audits,
               'standing_audit_count': len(standing_audits),
               'guideline_reviews': guideline_reviews,
-              'guideline_review_count': len(guideline_reviews), 'disclaimer': '자동 변경 탐지; 법률 위반 판정 아님'}
+              'guideline_review_count': len(guideline_reviews), 'evidence_review': evidence_review or {}, 'disclaimer': '자동 변경 탐지; 법률 위반 판정 아님'}
     (path / 'latest.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
     lines = ['# Privacy Watch — 일일 점검', '', f'- 생성(UTC): {timestamp}',
              f'- 최초 수집: {report["baseline_count"]}건', f'- 변경 감지: {report["change_count"]}건',
@@ -76,6 +76,14 @@ def create_reports(events, failures, outdir, candidates=None, standing_audits=No
                       f'- 정책 문맥: {item["policy"]["evidence_excerpt"][:300]}',
                       '- 법적 효력: 원칙적으로 참고자료; 실제 의무는 법령 확인 필요',
                       '- 상태: unverified_guidance_policy_overlap (법 위반 판정 아님)', '']
+    if evidence_review:
+        lines += ['## Phase 4 — 근거 품질 및 법적 검토', '',
+                  f'- PDF 품질 기록: {len(evidence_review["quality"])}건',
+                  f'- 조문 연결 후보: {len(evidence_review["article_hints"])}건',
+                  f'- 고지 누락 검토 후보: {len(evidence_review["possible_disclosure_gaps"])}건',
+                  '- 자동 위반 확정: 0건 (법적 검증 필요)', '']
+        for item in evidence_review["quality"]:
+            lines.append(f'- {item["title"]}: {item["pages"]}쪽, 저텍스트 페이지 {item["low_text_pages"]}, 공식 출처 검증 대기')
     if failures:
         lines += ['## 수집 실패 (확인 필요)', '']
         for f in failures:
