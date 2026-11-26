@@ -1,6 +1,9 @@
 """Local PDF evidence only; no network access or automatic legal conclusions."""
 import hashlib
 import json
+import shutil
+import subprocess
+import tempfile
 from pathlib import Path
 from urllib.parse import quote
 from pypdf import PdfReader
@@ -40,6 +43,21 @@ def load_asset(source, root):
     if reader.is_encrypted or len(reader.pages) > 1500:
         raise ValueError("encrypted or oversized PDF")
     pages = [(p.extract_text() or "").strip() for p in reader.pages]
+    ocr_pages = []
+    # Bounded fallback for low-text pages; never claim visual completeness.
+    if shutil.which("pdftoppm") and shutil.which("tesseract"):
+        with tempfile.TemporaryDirectory() as tmp:
+            for i in [n for n,p in enumerate(pages,1) if len(p)<20][:8]:
+                prefix = str(Path(tmp) / "page")
+                try:
+                    subprocess.run(["pdftoppm","-f",str(i),"-l",str(i),"-r","150","-singlefile","-png",str(path),prefix], check=True, timeout=20, capture_output=True)
+                    result = subprocess.run(["tesseract",prefix+".png","stdout","-l","kor+eng"],check=True,timeout=25,capture_output=True)
+                    recovered = result.stdout.decode("utf-8",errors="replace").strip()
+                    if len(recovered)>len(pages[i-1]):
+                        pages[i-1]=recovered
+                        ocr_pages.append(i)
+                except (OSError, subprocess.SubprocessError):
+                    continue
     if sum(len(p) for p in pages) < 250:
         raise ValueError("PDF text unavailable; manual OCR/review required")
     missing = [i for i,p in enumerate(pages, 1) if len(p) < 20]
@@ -52,7 +70,7 @@ def load_asset(source, root):
         "asset_path": source["file"], "official_source_url": meta.get("source_url"),
         "issuer": meta.get("issuer"), "publication_date": meta.get("publication_date"),
         "version": meta.get("version"), "review_status": "pending_official_version_confirmation",
-        "page_count": len(pages), "pages_with_little_text": missing,
+        "ocr_pages": ocr_pages, "page_count": len(pages), "pages_with_little_text": missing,
         "evidence_coverage": "partial_text_extraction" if missing else "page_text_extracted_not_visual_validation",
         "authority": "nonbinding_reference"
     })]

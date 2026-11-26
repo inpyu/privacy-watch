@@ -19,7 +19,11 @@ def create_reports(events, failures, outdir, candidates=None, standing_audits=No
               'standing_audits': standing_audits,
               'standing_audit_count': len(standing_audits),
               'guideline_reviews': guideline_reviews,
-              'guideline_review_count': len(guideline_reviews), 'evidence_review': evidence_review or {}, 'disclaimer': '자동 변경 탐지; 법률 위반 판정 아님'}
+              'guideline_review_count': len(guideline_reviews), 'evidence_review': {k:v for k,v in (evidence_review or {}).items() if k != 'article_hints'}, 'disclaimer': '자동 변경 탐지; 법률 위반 판정 아님'}
+    if evidence_review:
+        (path / 'article_hints.json').write_text(json.dumps(evidence_review.get("article_hints", []), ensure_ascii=False, indent=2), encoding="utf-8")
+        report["evidence_review"]["article_hint_count"] = len(evidence_review.get("article_hints", []))
+        report["evidence_review"]["article_hint_file"] = "reports/article_hints.json"
     (path / 'latest.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
     lines = ['# Privacy Watch — 일일 점검', '', f'- 생성(UTC): {timestamp}',
              f'- 최초 수집: {report["baseline_count"]}건', f'- 변경 감지: {report["change_count"]}건',

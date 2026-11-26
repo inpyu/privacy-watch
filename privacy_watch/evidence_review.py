@@ -3,7 +3,7 @@ import hashlib
 import re
 from .standing_audit import current_documents, current_effective
 
-ARTICLE = re.compile(r"(?:제\s*|§\s*)(\d+)\s*(?:조)?(?:\s*의\s*(\d+))?")
+ARTICLE = re.compile(r"(?:제\s*(\d+)\s*조|§\s*(\d+))(?:\s*의\s*(\d+))?")
 FIELDS = {
     "purpose": ("처리 목적", "수집 및 이용 목적", "수집·이용 목적", "이용 목적"),
     "retention": ("보유기간", "보유 기간", "보유 및 이용기간", "보유 및 이용 기간"),
@@ -35,7 +35,7 @@ def review_evidence(store, seen_keys):
             if not number:
                 continue
             for match in list(ARTICLE.finditer(page))[:30]:
-                article = match.group(1) + ("의" + match.group(2) if match.group(2) else "")
+                article = (match.group(1) or match.group(2)) + ("의" + match.group(3) if match.group(3) else "")
                 mappings.append({"guide": d["title"], "url": d["url"], "page": int(number.group(1)),
                     "article_hint": article, "excerpt": page[max(0,match.start()-100):match.end()+180],
                     "possible_law_url": pipa["url"] if pipa else None,
@@ -50,8 +50,11 @@ def review_evidence(store, seen_keys):
                     "grade": "B", "reportable_violation": False,
                     "required_checks": ["현행 조문 및 적용 예외 확인", "연결 문서와 동의 화면 및 원문 확인",
                                         "동의어와 문맥 확인", "실제 누락 증거 확보"]})
-    return {"quality": quality, "article_hints": mappings, "possible_disclosure_gaps": gaps,
+    from .precision import precision_review
+    result = {"quality": quality, "article_hints": mappings, "possible_disclosure_gaps": gaps,
             "case_references": references, "grading": {"S":"객관적 증거 및 적용 법규·예외 검증 완료",
             "A":"구체적 증거와 법적 근거 확보, 제한적 추가 확인 필요",
             "B":"미검증 후보", "C":"단순 키워드 일치"},
             "reportable_count": 0, "requires_chatgpt_legal_review": True}
+    result["precision"] = precision_review(store, seen_keys, result)
+    return result
