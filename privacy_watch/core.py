@@ -125,6 +125,7 @@ class Store:
                 'url=excluded.url,last_seen=excluded.last_seen',
                 (doc.key, doc.title, doc.category, doc.url, ts))
             if last and last[1] == digest:
+                self.db.execute('UPDATE versions SET metadata_json=? WHERE id=?', (json.dumps(doc.metadata, ensure_ascii=False), last[0]))
                 return None
             # Preserve all historical transitions, including a later reversion.
             cur = self.db.execute('INSERT INTO versions(doc_key,content_hash,text,metadata_json,observed_at) '

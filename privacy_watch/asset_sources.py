@@ -30,7 +30,7 @@ def asset_sources(root):
                            "file": rel, "category": category, "meta": meta})
     return result
 
-def load_asset(source, root):
+def load_asset(source, root, store=None):
     root = Path(root).resolve()
     path = (root / source["file"]).resolve()
     if not path.is_relative_to(root / "assets") or path.suffix.lower() != ".pdf":
@@ -38,6 +38,30 @@ def load_asset(source, root):
     if path.stat().st_size > 100_000_000:
         raise ValueError("PDF exceeds size limit")
     raw = path.read_bytes()
+    digest = hashlib.sha256(raw).hexdigest()
+    cache_version = "pdf-ocr-v1"
+    cached = None
+    if store is not None:
+        store.db.execute("CREATE TABLE IF NOT EXISTS pdf_extraction_cache (digest TEXT, version TEXT, text TEXT, metadata TEXT, PRIMARY KEY(digest, version))")
+        cached = store.db.execute("SELECT text, metadata FROM pdf_extraction_cache WHERE digest=? AND version=?", (digest, cache_version)).fetchone()
+    if cached:
+        text, extraction = cached[0], json.loads(cached[1])
+    else:
+        text, extraction = extract_pdf(raw, path)
+        if store is not None:
+            with store.db:
+                store.db.execute("INSERT OR REPLACE INTO pdf_extraction_cache VALUES (?,?,?,?)", (digest, cache_version, text, json.dumps(extraction)))
+    meta = source["meta"]
+    url = "https://github.com/inpyu/privacy-watch/blob/main/" + quote(source["file"])
+    return [Document(source["id"], meta.get("title") or path.stem, url, source["category"], text, {
+        **extraction, "retrieval": "local_asset_pdf", "source_sha256": digest,
+        "asset_path": source["file"], "official_source_url": meta.get("source_url"),
+        "issuer": meta.get("issuer"), "publication_date": meta.get("publication_date"),
+        "version": meta.get("version"), "review_status": "pending_official_version_confirmation",
+        "authority": "nonbinding_reference", "extraction_cache_version": cache_version
+    })]
+
+def extract_pdf(raw, path):
     from io import BytesIO
     reader = PdfReader(BytesIO(raw))
     if reader.is_encrypted or len(reader.pages) > 1500:
@@ -62,15 +86,7 @@ def load_asset(source, root):
         raise ValueError("PDF text unavailable; manual OCR/review required")
     missing = [i for i,p in enumerate(pages, 1) if len(p) < 20]
     text = "\n".join(f"[PDF page {i}]\n{p}" for i,p in enumerate(pages, 1))
-    meta = source["meta"]
-    url = "https://github.com/inpyu/privacy-watch/blob/main/" + quote(source["file"])
-    return [Document(source["id"], meta.get("title") or path.stem, url,
-                     source["category"], text, {
-        "retrieval": "local_asset_pdf", "source_sha256": hashlib.sha256(raw).hexdigest(),
-        "asset_path": source["file"], "official_source_url": meta.get("source_url"),
-        "issuer": meta.get("issuer"), "publication_date": meta.get("publication_date"),
-        "version": meta.get("version"), "review_status": "pending_official_version_confirmation",
+    return text, {
         "ocr_pages": ocr_pages, "page_count": len(pages), "pages_with_little_text": missing,
-        "evidence_coverage": "partial_text_extraction" if missing else "page_text_extracted_not_visual_validation",
-        "authority": "nonbinding_reference"
-    })]
+        "evidence_coverage": "partial_text_extraction" if missing else "page_text_extracted_not_visual_validation"
+    }

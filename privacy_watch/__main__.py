@@ -24,7 +24,7 @@ def run(config, db_path, report_dir, llm=False, delay=1.0):
             ('web', lambda x: fetch_web(x, fetcher)),
             ('laws', lambda x: fetch_law(x, fetcher, os.getenv('LAW_API_OC'))),
             ('administrative_rules', lambda x: fetch_law(x, fetcher, os.getenv('LAW_API_OC'), rule=True)),
-            ('assets', lambda x: load_asset(x, Path(config).resolve().parent.parent)),
+            ('assets', lambda x: load_asset(x, Path(config).resolve().parent.parent, store=store)),
         ]
         try:
             settings['assets'] = asset_sources(Path(config).resolve().parent.parent)
